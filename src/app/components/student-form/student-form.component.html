@@ -1,0 +1,118 @@
+<div class="form-container">
+  <form [formGroup]="studentForm">
+    <mat-form-field appearance="outline">
+      <mat-label>Full Name</mat-label>
+      <input
+        matInput
+        formControlName="fullName"
+        placeholder="Enter full name"
+        required
+      />
+      <mat-error
+        *ngIf="
+          studentForm.get('fullName')?.hasError('required') &&
+          studentForm.get('fullName')?.touched
+        "
+      >
+        Full Name is required.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Email -->
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        formControlName="email"
+        placeholder="Enter email address"
+        required
+      />
+      <mat-error
+        *ngIf="
+          studentForm.get('email')?.hasError('required') &&
+          studentForm.get('email')?.touched
+        "
+      >
+        Email is required.
+      </mat-error>
+      <mat-error
+        *ngIf="
+          studentForm.get('email')?.hasError('email') &&
+          studentForm.get('email')?.touched
+        "
+      >
+        Enter a valid email address.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Gender -->
+    <label>Gender:</label>
+    <mat-radio-group formControlName="gender" class="gender-options">
+      <mat-radio-button value="Male">Male</mat-radio-button>
+      <mat-radio-button value="Female">Female</mat-radio-button>
+      <mat-radio-button value="Other">Other</mat-radio-button>
+    </mat-radio-group>
+    <mat-error
+      *ngIf="
+        studentForm.get('gender')?.touched &&
+        studentForm.get('gender')?.hasError('required')
+      "
+    >
+      Gender is required.
+    </mat-error>
+
+    <!-- Year -->
+    <mat-form-field appearance="outline">
+      <mat-label>Year</mat-label>
+      <mat-select formControlName="year" required>
+        <mat-option value="1st Year">1st Year</mat-option>
+        <mat-option value="2nd Year">2nd Year</mat-option>
+        <mat-option value="3rd Year">3rd Year</mat-option>
+        <mat-option value="Final Year">Final Year</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="
+          studentForm.get('year')?.hasError('required') &&
+          studentForm.get('year')?.touched
+        "
+      >
+        Year is required.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Electives -->
+    <label>Electives:</label>
+    <div formArrayName="electives" class="electives-options">
+      <div *ngFor="let elective of electives; let i = index">
+        <mat-checkbox [formControlName]="i">{{ elective }}</mat-checkbox>
+      </div>
+    </div>
+
+    <!-- Branch -->
+    <mat-form-field appearance="outline">
+      <mat-label>Branch</mat-label>
+      <input
+        type="text"
+        matInput
+        formControlName="branch"
+        [matAutocomplete]="autoBranch"
+      />
+      <mat-autocomplete #autoBranch="matAutocomplete">
+        <mat-option *ngFor="let branch of filteredBranches" [value]="branch">
+          {{ branch }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <!-- Submit Button -->
+    <button
+      (click)="onSubmit()"
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="!studentForm.valid"
+    >
+      Submit
+    </button>
+  </form>
+</div>

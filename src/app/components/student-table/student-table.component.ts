@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 import { StudentDataService } from '../../services/student-data.service';
 import { Student } from '../../models/student.interface';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { FormFieldConfig } from '../../models/modal.interface';
+import { FormModalComponent } from '../form-modal/form-modal.component';
 
 // import { MatDialog } from '@angular/material/dialog';
 // import { DeleteConfirmationDialogComponent } from '../delete-confirmation-dialog/delete-confirmation-dialog.component';
@@ -42,8 +43,31 @@ export class StudentTableComponent implements OnInit {
     'actions',
   ];
 
+  studentFields: FormFieldConfig[] = [
+    { key: 'name', label: 'Name', type: 'text', required: true },
+    {
+      key: 'email',
+      label: 'Email',
+      type: 'email',
+      required: true,
+    },
+    {
+      key: 'role',
+      label: 'Role',
+      type: 'select',
+      required: true,
+      options: [
+        { value: 'admin', label: 'Admin' },
+        { value: 'user', label: 'User' },
+        { value: 'moderator', label: 'Moderator' },
+      ],
+    },
+    { key: 'isActive', label: 'Active', type: 'checkbox' },
+  ];
+
   constructor(
-    private studentService: StudentDataService // private dialog: MatDialog // Inject MatDialog for Delete Confirmation
+    private studentService: StudentDataService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -57,6 +81,19 @@ export class StudentTableComponent implements OnInit {
   onEdit(student: Student) {
     // const studentCopy = { ...student, electives: Array.isArray(student.electives) ? student.electives : [] };
     // console.log(studentCopy);
+    const dialogRef = this.dialog.open(FormModalComponent, {
+      width: '500px',
+      data: {
+        data: student,
+        fields: this.studentFields,
+        title: 'Edit User',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) {
+      }
+    });
     this.studentService.setStudentToEdit(student); // Pass the student to the service
   }
 

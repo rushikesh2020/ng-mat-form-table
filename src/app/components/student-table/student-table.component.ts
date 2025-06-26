@@ -9,6 +9,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { FormFieldConfig } from '../../models/modal.interface';
+import { studentFields } from '../../models/student.interface';
 import { FormModalComponent } from '../form-modal/form-modal.component';
 
 // import { MatDialog } from '@angular/material/dialog';
@@ -43,28 +44,6 @@ export class StudentTableComponent implements OnInit {
     'actions',
   ];
 
-  studentFields: FormFieldConfig[] = [
-    { key: 'name', label: 'Name', type: 'text', required: true },
-    {
-      key: 'email',
-      label: 'Email',
-      type: 'email',
-      required: true,
-    },
-    {
-      key: 'role',
-      label: 'Role',
-      type: 'select',
-      required: true,
-      options: [
-        { value: 'admin', label: 'Admin' },
-        { value: 'user', label: 'User' },
-        { value: 'moderator', label: 'Moderator' },
-      ],
-    },
-    { key: 'isActive', label: 'Active', type: 'checkbox' },
-  ];
-
   constructor(
     private studentService: StudentDataService,
     private dialog: MatDialog
@@ -85,8 +64,8 @@ export class StudentTableComponent implements OnInit {
       width: '500px',
       data: {
         data: student,
-        fields: this.studentFields,
-        title: 'Edit User',
+        fields: studentFields,
+        title: 'Edit Student',
       },
     });
 

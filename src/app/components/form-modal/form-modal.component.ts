@@ -18,21 +18,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-
-export interface DialogData {
-  data: any;
-  fields: FormFieldConfig[];
-  title: string;
-}
-
-export interface FormFieldConfig {
-  key: string;
-  label: string;
-  type: 'text' | 'email' | 'number' | 'date' | 'select' | 'checkbox';
-  required?: boolean;
-  options?: { value: any; label: string }[]; // For select fields
-  disabled: boolean;
-}
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { FormFieldConfig, DialogData } from '../../models/modal.interface';
+import { map, Observable, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-form-modal',
@@ -48,12 +36,14 @@ export interface FormFieldConfig {
     MatDatepickerModule,
     MatNativeDateModule,
     MatCheckboxModule,
+    MatAutocompleteModule,
   ],
   templateUrl: './form-modal.component.html',
   styleUrl: './form-modal.component.scss',
 })
 export class FormModalComponent implements OnInit {
   editForm: FormGroup;
+  filteredOptionsMap: { [key: string]: Observable<any[]> } = {};
 
   constructor(
     private fb: FormBuilder,
@@ -65,10 +55,11 @@ export class FormModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildForm();
+    this.setupAutocomplete();
   }
 
   private buildForm(): void {
-    const formControls: Record<string, any> = {};
+    const formControls: { [key: string]: any } = {};
 
     this.data.fields.forEach((field) => {
       const validators = [];
@@ -92,6 +83,10 @@ export class FormModalComponent implements OnInit {
         initialValue = !!initialValue;
       }
 
+      if (field.type === 'multi-select') {
+        initialValue = Array.isArray(initialValue) ? initialValue : [];
+      }
+
       formControls[field.key] = [
         { value: initialValue, disabled: field.disabled || false },
         validators,
@@ -99,6 +94,34 @@ export class FormModalComponent implements OnInit {
     });
 
     this.editForm = this.fb.group(formControls);
+  }
+
+  private setupAutocomplete(): void {
+    this.data.fields.forEach((field) => {
+      if (field.type === 'autocomplete' && field.options) {
+        const control = this.editForm.get(field.key);
+        if (control) {
+          this.filteredOptionsMap[field.key] = control.valueChanges.pipe(
+            startWith(''),
+            map((value) => this.filterOptions(value || '', field.options || []))
+          );
+        }
+      }
+    });
+  }
+
+  private filterOptions(
+    value: string,
+    options: { value: any; label: string }[]
+  ): { value: any; label: string }[] {
+    const filterValue = value.toLowerCase();
+    return options.filter((option) =>
+      option.label.toLowerCase().includes(filterValue)
+    );
+  }
+
+  getFilteredOptions(field: FormFieldConfig): Observable<any[]> {
+    return this.filteredOptionsMap[field.key] || [];
   }
 
   onSave(): void {

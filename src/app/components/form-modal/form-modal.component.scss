@@ -1,0 +1,21 @@
+.edit-form {
+  min-width: 400px;
+  max-width: 600px;
+}
+
+.form-field {
+  margin-bottom: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.checkbox-field {
+  margin: 16px 0;
+}
+
+mat-dialog-content {
+  max-height: 60vh;
+  overflow-y: auto;
+}

@@ -18,7 +18,7 @@
           matInput
           [formControlName]="field.key"
           [type]="field.type"
-          [disabled]="field.disabled"
+          [disabled]="field.disabled ?? false"
         />
         <mat-error *ngIf="editForm.get(field.key)?.hasError('required')">
           {{ field.label }} is required
@@ -39,7 +39,7 @@
           matInput
           [matDatepicker]="picker"
           [formControlName]="field.key"
-          [disabled]="field.disabled"
+          [disabled]="field.disabled ?? false"
         />
         <mat-datepicker-toggle
           matIconSuffix
@@ -58,7 +58,60 @@
         class="full-width"
       >
         <mat-label>{{ field.label }}</mat-label>
-        <mat-select [formControlName]="field.key" [disabled]="field.disabled">
+        <mat-select
+          [formControlName]="field.key"
+          [disabled]="field.disabled ?? false"
+        >
+          <mat-option
+            *ngFor="let option of field.options"
+            [value]="option.value"
+          >
+            {{ option.label }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="editForm.get(field.key)?.hasError('required')">
+          {{ field.label }} is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Autocomplete -->
+      <mat-form-field
+        *ngIf="field.type === 'autocomplete'"
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>{{ field.label }}</mat-label>
+        <input
+          matInput
+          [formControlName]="field.key"
+          [matAutocomplete]="auto"
+          [disabled]="field.disabled ?? false"
+        />
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option
+            *ngFor="let option of getFilteredOptions(field) | async"
+            [value]="option.value"
+          >
+            {{ option.label }}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-error *ngIf="editForm.get(field.key)?.hasError('required')">
+          {{ field.label }} is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Multi-select -->
+      <mat-form-field
+        *ngIf="field.type === 'multi-select'"
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>{{ field.label }}</mat-label>
+        <mat-select
+          [formControlName]="field.key"
+          [disabled]="field.disabled ?? false"
+          multiple
+        >
           <mat-option
             *ngFor="let option of field.options"
             [value]="option.value"
@@ -75,7 +128,7 @@
       <mat-checkbox
         *ngIf="field.type === 'checkbox'"
         [formControlName]="field.key"
-        [disabled]="field.disabled"
+        [disabled]="field.disabled ?? false"
         class="full-width checkbox-field"
       >
         {{ field.label }}

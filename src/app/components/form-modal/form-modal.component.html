@@ -3,11 +3,10 @@
 <mat-dialog-content>
   <form [formGroup]="editForm" class="edit-form">
     <div *ngFor="let field of data.fields" class="form-field">
-      <!-- Text, Email, Number inputs -->
+      <!-- Text and Number inputs -->
       <mat-form-field
         *ngIf="
           field.type === 'text' ||
-          field.type === 'email' ||
           field.type === 'number'
         "
         appearance="outline"
@@ -20,55 +19,6 @@
           [type]="field.type"
           [disabled]="field.disabled ?? false"
         />
-        <mat-error *ngIf="editForm.get(field.key)?.hasError('required')">
-          {{ field.label }} is required
-        </mat-error>
-        <mat-error *ngIf="editForm.get(field.key)?.hasError('email')">
-          Please enter a valid email
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Date picker -->
-      <mat-form-field
-        *ngIf="field.type === 'date'"
-        appearance="outline"
-        class="full-width"
-      >
-        <mat-label>{{ field.label }}</mat-label>
-        <input
-          matInput
-          [matDatepicker]="picker"
-          [formControlName]="field.key"
-          [disabled]="field.disabled ?? false"
-        />
-        <mat-datepicker-toggle
-          matIconSuffix
-          [for]="picker"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-        <mat-error *ngIf="editForm.get(field.key)?.hasError('required')">
-          {{ field.label }} is required
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Select dropdown -->
-      <mat-form-field
-        *ngIf="field.type === 'select'"
-        appearance="outline"
-        class="full-width"
-      >
-        <mat-label>{{ field.label }}</mat-label>
-        <mat-select
-          [formControlName]="field.key"
-          [disabled]="field.disabled ?? false"
-        >
-          <mat-option
-            *ngFor="let option of field.options"
-            [value]="option.value"
-          >
-            {{ option.label }}
-          </mat-option>
-        </mat-select>
         <mat-error *ngIf="editForm.get(field.key)?.hasError('required')">
           {{ field.label }} is required
         </mat-error>
@@ -100,39 +50,21 @@
         </mat-error>
       </mat-form-field>
 
-      <!-- Multi-select -->
-      <mat-form-field
-        *ngIf="field.type === 'multi-select'"
-        appearance="outline"
-        class="full-width"
-      >
-        <mat-label>{{ field.label }}</mat-label>
-        <mat-select
-          [formControlName]="field.key"
-          [disabled]="field.disabled ?? false"
-          multiple
-        >
-          <mat-option
+      <!-- Radio buttons -->
+      <div *ngIf="field.type === 'radio'" class="full-width">
+        <label class="mat-label">{{ field.label }}</label>
+        <mat-radio-group [formControlName]="field.key">
+          <mat-radio-button
             *ngFor="let option of field.options"
             [value]="option.value"
           >
             {{ option.label }}
-          </mat-option>
-        </mat-select>
+          </mat-radio-button>
+        </mat-radio-group>
         <mat-error *ngIf="editForm.get(field.key)?.hasError('required')">
           {{ field.label }} is required
         </mat-error>
-      </mat-form-field>
-
-      <!-- Checkbox -->
-      <mat-checkbox
-        *ngIf="field.type === 'checkbox'"
-        [formControlName]="field.key"
-        [disabled]="field.disabled ?? false"
-        class="full-width checkbox-field"
-      >
-        {{ field.label }}
-      </mat-checkbox>
+      </div>
     </div>
   </form>
 </mat-dialog-content>

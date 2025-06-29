@@ -2,6 +2,19 @@ import { Injectable } from '@angular/core';
 import { Student } from '../models/student.interface';
 import { BehaviorSubject } from 'rxjs';
 
+const BRANCHES = [
+  'Computer Science Engineering',
+  'Information Technology',
+  'Electronics and Communication',
+  'Mechanical Engineering',
+  'Civil Engineering',
+  'Electrical Engineering',
+  'Chemical Engineering',
+  'Aerospace Engineering',
+  'Biotechnology',
+  'Industrial Engineering',
+];
+
 @Injectable({
   providedIn: 'root',
 })
@@ -14,6 +27,10 @@ export class StudentDataService {
   studentToEdit$ = this.studentToEdit.asObservable();
 
   constructor() {}
+
+  getBranchOptions() {
+    return BRANCHES.map((branch) => ({ value: branch, label: branch }));
+  }
 
   // Generate a unique ID for each student
   private generateId(): string {

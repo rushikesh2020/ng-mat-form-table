@@ -1,5 +1,6 @@
 import { FormFieldConfig } from './modal.interface';
 
+// This interface is for the student form only (not for the modal form)
 export interface Student {
   id: string; // Unique ID for the student
   fullName: string; // Full name of the student
@@ -23,7 +24,6 @@ export const AVAILABLE_ELECTIVES = [
   'Cloud Computing',
 ];
 
-// Available branches for autocomplete
 export const AVAILABLE_BRANCHES = [
   'Computer Science Engineering',
   'Information Technology',
@@ -37,7 +37,7 @@ export const AVAILABLE_BRANCHES = [
   'Industrial Engineering',
 ];
 
-// Student fields configuration for the generic dialog
+// Student fields configuration for the student form (not for the modal)
 export const studentFields: FormFieldConfig[] = [
   {
     key: 'fullName',
@@ -46,15 +46,15 @@ export const studentFields: FormFieldConfig[] = [
     required: true,
   },
   {
-    key: 'email',
-    label: 'Email',
-    type: 'email',
+    key: 'rollNumber',
+    label: 'Roll Number',
+    type: 'number',
     required: true,
   },
   {
     key: 'gender',
     label: 'Gender',
-    type: 'select',
+    type: 'radio',
     required: true,
     options: [
       { value: 'Male', label: 'Male' },
@@ -63,35 +63,9 @@ export const studentFields: FormFieldConfig[] = [
     ],
   },
   {
-    key: 'year',
-    label: 'Year',
-    type: 'select',
-    required: true,
-    options: [
-      { value: '1st Year', label: '1st Year' },
-      { value: '2nd Year', label: '2nd Year' },
-      { value: '3rd Year', label: '3rd Year' },
-      { value: 'Final Year', label: 'Final Year' },
-    ],
-  },
-  {
     key: 'branch',
     label: 'Branch',
-    type: 'autocomplete', // We'll need to add this type to the dialog
+    type: 'autocomplete',
     required: true,
-    options: AVAILABLE_BRANCHES.map((branch) => ({
-      value: branch,
-      label: branch,
-    })),
-  },
-  {
-    key: 'electives',
-    label: 'Electives',
-    type: 'multi-select', // We'll need to add this type to the dialog
-    required: false,
-    options: AVAILABLE_ELECTIVES.map((elective) => ({
-      value: elective,
-      label: elective,
-    })),
   },
 ];

@@ -14,13 +14,11 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatRadioModule } from '@angular/material/radio';
 import { FormFieldConfig, DialogData } from '../../models/modal.interface';
 import { map, Observable, startWith } from 'rxjs';
+import { StudentDataService } from '../../services/student-data.service';
 
 @Component({
   selector: 'app-form-modal',
@@ -32,11 +30,8 @@ import { map, Observable, startWith } from 'rxjs';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatCheckboxModule,
     MatAutocompleteModule,
+    MatRadioModule,
   ],
   templateUrl: './form-modal.component.html',
   styleUrl: './form-modal.component.scss',
@@ -48,7 +43,8 @@ export class FormModalComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<FormModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private studentDataService: StudentDataService
   ) {
     this.editForm = this.fb.group({});
   }
@@ -68,42 +64,32 @@ export class FormModalComponent implements OnInit {
         validators.push(Validators.required);
       }
 
-      if (field.type === 'email') {
-        validators.push(Validators.email);
-      }
-
       // Handle different data types for initial values
       let initialValue = this.data.data[field.key];
-
-      if (field.type === 'date' && initialValue) {
-        initialValue = new Date(initialValue);
-      }
-
-      if (field.type === 'checkbox') {
-        initialValue = !!initialValue;
-      }
-
-      if (field.type === 'multi-select') {
-        initialValue = Array.isArray(initialValue) ? initialValue : [];
-      }
 
       formControls[field.key] = [
         { value: initialValue, disabled: field.disabled || false },
         validators,
       ];
     });
-
     this.editForm = this.fb.group(formControls);
   }
 
   private setupAutocomplete(): void {
     this.data.fields.forEach((field) => {
-      if (field.type === 'autocomplete' && field.options) {
+      if (field.type === 'autocomplete') {
         const control = this.editForm.get(field.key);
         if (control) {
+          let options: { value: any; label: string }[] = [];
+          // Use service for branch, otherwise use field.options
+          if (field.key === 'branch') {
+            options = this.studentDataService.getBranchOptions();
+          } else if (field.options) {
+            options = field.options;
+          }
           this.filteredOptionsMap[field.key] = control.valueChanges.pipe(
-            startWith(''),
-            map((value) => this.filterOptions(value || '', field.options || []))
+            startWith(control.value || ''),
+            map((value) => this.filterOptions(value || '', options))
           );
         }
       }
@@ -126,19 +112,8 @@ export class FormModalComponent implements OnInit {
 
   onSave(): void {
     if (this.editForm.valid) {
-      const formValue = this.editForm.getRawValue(); // getRawValue() includes disabled fields
-
-      // Process form data before returning
-      const processedData = { ...formValue };
-
-      this.data.fields.forEach((field) => {
-        if (field.type === 'date' && processedData[field.key]) {
-          // Convert date to ISO string or your preferred format
-          processedData[field.key] = processedData[field.key].toISOString();
-        }
-      });
-
-      this.dialogRef.close(processedData);
+      const formValue = this.editForm.getRawValue();
+      this.dialogRef.close(formValue);
     }
   }
 

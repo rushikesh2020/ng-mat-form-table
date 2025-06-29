@@ -9,14 +9,10 @@ export interface FormFieldConfig {
   label: string;
   type:
     | 'text'
-    | 'email'
     | 'number'
-    | 'date'
-    | 'select'
-    | 'checkbox'
     | 'autocomplete'
-    | 'multi-select';
+    | 'radio';
   required?: boolean;
-  options?: { value: any; label: string }[]; // For select, autocomplete, and multi-select fields
+  options?: { value: any; label: string }[]; // For autocomplete and radio fields
   disabled?: boolean;
 }

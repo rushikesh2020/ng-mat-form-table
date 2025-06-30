@@ -5,20 +5,12 @@
     <div *ngFor="let field of data.fields" class="form-field">
       <!-- Text and Number inputs -->
       <mat-form-field
-        *ngIf="
-          field.type === 'text' ||
-          field.type === 'number'
-        "
+        *ngIf="field.type === 'text' || field.type === 'number'"
         appearance="outline"
         class="full-width"
       >
         <mat-label>{{ field.label }}</mat-label>
-        <input
-          matInput
-          [formControlName]="field.key"
-          [type]="field.type"
-          [disabled]="field.disabled ?? false"
-        />
+        <input matInput [formControlName]="field.key" [type]="field.type" />
         <mat-error *ngIf="editForm.get(field.key)?.hasError('required')">
           {{ field.label }} is required
         </mat-error>
@@ -35,14 +27,10 @@
           matInput
           [formControlName]="field.key"
           [matAutocomplete]="auto"
-          [disabled]="field.disabled ?? false"
         />
         <mat-autocomplete #auto="matAutocomplete">
-          <mat-option
-            *ngFor="let option of getFilteredOptions(field) | async"
-            [value]="option.value"
-          >
-            {{ option.label }}
+          <mat-option *ngFor="let option; of" [value]="option">
+            {{ option }}
           </mat-option>
         </mat-autocomplete>
         <mat-error *ngIf="editForm.get(field.key)?.hasError('required')">

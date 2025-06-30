@@ -31,7 +31,90 @@ import { FormModalComponent } from '../form-modal/form-modal.component';
 })
 export class StudentTableComponent implements OnInit {
   // DataSource for the Material table
-  dataSource = new MatTableDataSource<Student>();
+  initialData: Student[] = [
+    {
+      id: 'STU001',
+      fullName: 'Alice Johnson',
+      email: 'alice.johnson@university.edu',
+      gender: 'Female',
+      year: '2024',
+      electives: ['Data Structures', 'Web Development', 'Machine Learning'],
+      branch: 'Computer Science',
+    },
+    {
+      id: 'STU002',
+      fullName: 'Michael Chen',
+      email: 'michael.chen@university.edu',
+      gender: 'Male',
+      year: '2023',
+      electives: ['Circuit Design', 'Signal Processing', 'Control Systems'],
+      branch: 'Electrical Engineering',
+    },
+    {
+      id: 'STU003',
+      fullName: 'Sarah Williams',
+      email: 'sarah.williams@university.edu',
+      gender: 'Female',
+      year: '2025',
+      electives: ['Thermodynamics', 'Fluid Mechanics', 'Heat Transfer'],
+      branch: 'Mechanical Engineering',
+    },
+    {
+      id: 'STU004',
+      fullName: 'David Rodriguez',
+      email: 'david.rodriguez@university.edu',
+      gender: 'Male',
+      year: '2024',
+      electives: [
+        'Structural Analysis',
+        'Geotechnical Engineering',
+        'Transportation',
+      ],
+      branch: 'Civil Engineering',
+    },
+    {
+      id: 'STU005',
+      fullName: 'Emily Davis',
+      email: 'emily.davis@university.edu',
+      gender: 'Female',
+      year: '2023',
+      electives: [
+        'Organic Chemistry',
+        'Process Control',
+        'Biochemical Engineering',
+      ],
+      branch: 'Chemical Engineering',
+    },
+    {
+      id: 'STU006',
+      fullName: 'James Thompson',
+      email: 'james.thompson@university.edu',
+      gender: 'Male',
+      year: '2025',
+      electives: ['Database Systems', 'Cybersecurity', 'Software Engineering'],
+      branch: 'Computer Science',
+    },
+    {
+      id: 'STU007',
+      fullName: 'Maria Garcia',
+      email: 'maria.garcia@university.edu',
+      gender: 'Female',
+      year: '2024',
+      electives: ['Power Systems', 'Renewable Energy', 'Electronics'],
+      branch: 'Electrical Engineering',
+    },
+    {
+      id: 'STU008',
+      fullName: 'Robert Lee',
+      email: 'robert.lee@university.edu',
+      gender: 'Male',
+      year: '2023',
+      electives: ['Manufacturing', 'Robotics', 'Materials Science'],
+      branch: 'Mechanical Engineering',
+    },
+  ];
+
+  dataSource = new MatTableDataSource<Student>(this.initialData);
 
   // Columns to display in the table
   displayedColumns: string[] = [
@@ -52,7 +135,7 @@ export class StudentTableComponent implements OnInit {
   ngOnInit() {
     // Subscribe to the student list from the service
     this.studentService.students$.subscribe((students) => {
-      this.dataSource.data = students;
+      this.dataSource.data = this.initialData;
     });
   }
 

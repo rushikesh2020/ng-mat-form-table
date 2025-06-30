@@ -38,8 +38,7 @@ import { StudentDataService } from '../../services/student-data.service';
 })
 export class FormModalComponent implements OnInit {
   editForm: FormGroup;
-  filteredOptionsMap: { [key: string]: Observable<any[]> } = {};
-
+  filteredOptions = [];
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<FormModalComponent>,
@@ -56,7 +55,7 @@ export class FormModalComponent implements OnInit {
 
   private buildForm(): void {
     const formControls: { [key: string]: any } = {};
-
+    console.log('Data: ', this.data, 'formControls: ', formControls);
     this.data.fields.forEach((field) => {
       const validators = [];
 
@@ -72,42 +71,29 @@ export class FormModalComponent implements OnInit {
         validators,
       ];
     });
+
     this.editForm = this.fb.group(formControls);
   }
 
   private setupAutocomplete(): void {
-    this.data.fields.forEach((field) => {
-      if (field.type === 'autocomplete') {
-        const control = this.editForm.get(field.key);
-        if (control) {
-          let options: { value: any; label: string }[] = [];
-          // Use service for branch, otherwise use field.options
-          if (field.key === 'branch') {
-            options = this.studentDataService.getBranchOptions();
-          } else if (field.options) {
-            options = field.options;
-          }
-          this.filteredOptionsMap[field.key] = control.valueChanges.pipe(
-            startWith(control.value || ''),
-            map((value) => this.filterOptions(value || '', options))
-          );
-        }
-      }
-    });
+    const branchControl = this.editForm.get('branch');
+
+    if (!branchControl) return;
+
+    const branchOptions = this.studentDataService.getBranchOptions();
+    // this.filterBranchOptions(branchControl.valueChanges, branchOptions)
+
+    this.filterBranchOptions(branchControl.valueChanges, branchOptions);
   }
 
-  private filterOptions(
-    value: string,
-    options: { value: any; label: string }[]
-  ): { value: any; label: string }[] {
-    const filterValue = value.toLowerCase();
-    return options.filter((option) =>
-      option.label.toLowerCase().includes(filterValue)
+  private filterBranchOptions(
+    searchValue: any,
+    branches: { [key: string]: string }
+  ): string[] {
+    const filterValue = searchValue.toLowerCase();
+    return Object.keys(branches).filter((key) =>
+      branches[key].toLowerCase().includes(filterValue)
     );
-  }
-
-  getFilteredOptions(field: FormFieldConfig): Observable<any[]> {
-    return this.filteredOptionsMap[field.key] || [];
   }
 
   onSave(): void {

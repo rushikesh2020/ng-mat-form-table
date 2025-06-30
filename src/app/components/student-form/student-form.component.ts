@@ -15,6 +15,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CommonModule } from '@angular/common';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { CustomSnackbarComponent } from '../custom-snackbar/custom-snackbar.component';
 
 @Component({
   selector: 'app-student-form',
@@ -58,7 +60,8 @@ export class StudentFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private studentService: StudentDataService
+    private studentService: StudentDataService,
+    private snackbar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -132,5 +135,13 @@ export class StudentFormComponent implements OnInit {
 
       this.studentService.clearStudentToEdit(); // Clear editing state
     }
+  }
+
+  showErrorSnackbar() {
+    this.snackbar.openFromComponent(CustomSnackbarComponent, {
+      data: { message: 'An error occurred while processing your request.' },
+      duration: 5000, // Auto-dismiss after 5 seconds
+      panelClass: ['custom-snackbar-container'],
+    });
   }
 }

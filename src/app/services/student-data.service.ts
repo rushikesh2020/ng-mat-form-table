@@ -2,18 +2,18 @@ import { Injectable } from '@angular/core';
 import { Student } from '../models/student.interface';
 import { BehaviorSubject } from 'rxjs';
 
-const BRANCHES = [
-  'Computer Science Engineering',
-  'Information Technology',
-  'Electronics and Communication',
-  'Mechanical Engineering',
-  'Civil Engineering',
-  'Electrical Engineering',
-  'Chemical Engineering',
-  'Aerospace Engineering',
-  'Biotechnology',
-  'Industrial Engineering',
-];
+const BRANCHES = {
+  CSE: 'Computer Science Engineering',
+  IT: 'Information Technology',
+  ECE: 'Electronics and Communication',
+  ME: 'Mechanical Engineering',
+  CE: 'Civil Engineering',
+  EE: 'Electrical Engineering',
+  CHE: 'Chemical Engineering',
+  AE: 'Aerospace Engineering',
+  BT: 'Biotechnology',
+  IE: 'Industrial Engineering',
+};
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +29,7 @@ export class StudentDataService {
   constructor() {}
 
   getBranchOptions() {
-    return BRANCHES.map((branch) => ({ value: branch, label: branch }));
+    return BRANCHES;
   }
 
   // Generate a unique ID for each student

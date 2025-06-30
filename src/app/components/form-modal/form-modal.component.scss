@@ -1,21 +1,11 @@
 .edit-form {
-  min-width: 400px;
-  max-width: 600px;
+  padding-top: 16px; /* Add top padding to prevent label cutoff */
 }
 
 .form-field {
-  margin-bottom: 16px;
+  margin-bottom: 16px; /* Ensure spacing between fields */
 }
 
-.full-width {
-  width: 100%;
-}
-
-.checkbox-field {
-  margin: 16px 0;
-}
-
-mat-dialog-content {
-  max-height: 60vh;
-  overflow-y: auto;
+.form-field:first-child {
+  margin-top: 8px; /* Extra spacing for first field */
 }
